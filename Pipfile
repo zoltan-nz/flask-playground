@@ -7,6 +7,11 @@ verify_ssl = true
 pytest = "*"
 black = "*"
 pylint = "*"
+pylint-flask = "*"
+tox = "*"
+tox-pipenv = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"
