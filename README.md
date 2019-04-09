@@ -4,14 +4,14 @@
 
 ## Prerequisite
 
-- Python 3.7 with `pyenv` 
+- Python 3.7 with `pyenv`
 
 ```bash
 # Mac Mojave hack
 $ CFLAGS="-I$(xcrun --show-sdk-path)/usr/include" pyenv install 3.7.3
 $ pyenv global 3.7.3
 
-# Check installation 
+# Check installation
 $ pyenv versions
 $ python --version
 ```
@@ -78,6 +78,12 @@ The `black` package has only pre-release version. For this reason the `--pre` op
 - `pylintrc`
 - `setup.cfg`
 
+## Add dotenv support
+
+```
+$ pipenv install python-dotenv
+```
+
 ## Links
 
 - [Pyenv](https://github.com/pyenv/pyenv)
@@ -86,3 +92,5 @@ The `black` package has only pre-release version. For this reason the `--pre` op
 - [Pytest](https://docs.pytest.org/en/latest/)
 - [Black](https://black.readthedocs.io/en/stable/)
 - [Pylint](https://www.pylint.org/)
+- [Flask extensions](https://nickjanetakis.com/blog/15-useful-flask-extensions-and-libraries-that-i-use-in-every-project)
+- [Flask with MongoDB Tutorial](https://medium.com/@riken.mehta/full-stack-tutorial-flask-react-docker-420da3543c91)

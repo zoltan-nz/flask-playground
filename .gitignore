@@ -14,3 +14,4 @@ build/
 .tox
 .testmondata
 .venv
+.env
