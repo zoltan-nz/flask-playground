@@ -1,0 +1,13 @@
+[MASTER]
+load-plugins = pylint_flask
+
+[MESSAGES CONTROL]
+disable = missing-docstring,
+          redefined-outer-name
+
+[REPORTS]
+output-format = colorized
+reports = no
+
+[LOGGING]
+logging-format-style = new

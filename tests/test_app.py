@@ -1,4 +1,3 @@
-""" Main app unit tests """
 import pytest
 
 from flaskr import create_app
@@ -6,9 +5,7 @@ from flaskr import create_app
 
 @pytest.fixture
 def app():
-    """Create and configure a new app instance"""
     test_app = create_app({"TESTING": True})
-
     yield test_app
 
 

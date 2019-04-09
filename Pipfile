@@ -4,14 +4,13 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
 black = "*"
+pytest = "*"
+pytest-testmon = "*"
+pytest-watch = "*"
+coverage = "*"
 pylint = "*"
 pylint-flask = "*"
-tox = "*"
-tox-pipenv = "*"
-coverage = "*"
-pytest-cov = "*"
 
 [packages]
 flask = "*"

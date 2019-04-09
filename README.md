@@ -27,6 +27,7 @@ $ pip install pipenv
 ```bash
 $ git clone git@github.com:zoltan-nz/flask-playground.git
 $ cd flask-playground
+$ PIPENV_VENV_IN_PROJECT=1 pipenv shell --fancy
 $ pipenv install
 $ FLASK_APP=flaskr FLASK_ENV=development FLASK_DEBUG=1 flask run
 ```
@@ -36,13 +37,19 @@ $ FLASK_APP=flaskr FLASK_ENV=development FLASK_DEBUG=1 flask run
 Test:
 
 ```bash
-$ pytest --cov=./flaskr
+$ pytest
+```
+
+Test with watch:
+
+```
+$ ptw
 ```
 
 Lint:
 
 ```bash
-$ pylint **/*.py
+$ pylint --load-plugins pylint_flask flaskr test
 ```
 
 Format:
@@ -61,10 +68,15 @@ $ pipenv install flask
 Furthermore we can add the following useful packages for development.
 
 ```
-$ pipenv install -d pytest black pylint pylint-flask tox tox-pipenv coverage pytest-cov --pre
+$ pipenv install -d pytest black pylint pylint-flask coverage pytest-cov pytest-testmon pytest-watch --pre
 ```
 
 The `black` package has only pre-release version. For this reason the `--pre` option should be used.
+
+## Configuration files
+
+- `pylintrc`
+- `setup.cfg`
 
 ## Links
 
