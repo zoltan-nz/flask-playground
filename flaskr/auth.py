@@ -10,41 +10,40 @@ from flask import (
     flash,
     g,
 )
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-def is_user_valid(user, password) -> bool:
-    if user is None:
-        flash("Incorrect username.")
-        return False
-
-    if check_password_hash(user["password"], password):
-        flash("Incorrect password.")
-        return False
-
-
-def process_post_request() -> None:
-    username = request.form["username"]
-    password = request.form["password"]
-
-    db = get_db()
-
-    user = db.execute(f"SELECT * FROM user WHERE username = {username}").fetchone()
-
-    if is_user_valid(user, password):
-        session.clear()
-        session["user_id"] = user["id"]
-        return redirect(url_for("index"))
-
-
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
-        process_post_request()
+        username = request.form["username"]
+        password = request.form["password"]
+        db = get_db()
+        error = None
+
+        if not username:
+            error = "Username is required."
+        elif not password:
+            error = "Password is required."
+        elif (
+            db.execute("SELECT id FROM user WHERE username = ?", (username,)).fetchone()
+            is not None
+        ):
+            error = "User {} is already registered.".format(username)
+
+        if error is None:
+            db.execute(
+                "INSERT INTO user (username, password) VALUES (?, ?)",
+                (username, generate_password_hash(password)),
+            )
+            db.commit()
+            return redirect(url_for("auth.login"))
+
+        flash(error)
 
     return render_template("auth/register.html")
 
