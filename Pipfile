@@ -21,3 +21,10 @@ python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+setup = "pipenv install --dev"
+app = "flask run --host=0.0.0.0"
+test = "pytest"
+cov = "coverage run -m pytest"
+cov_report = "coverage report"
