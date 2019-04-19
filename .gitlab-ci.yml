@@ -11,6 +11,9 @@ variables:
   PIPENV_VENV_IN_PROJECT: 1
   LANG: "en_NZ.UTF-8"
   LC_ALL: "en_NZ.UTF-8"
+  FLASK_APP: flaskr
+  FLASK_ENV: production
+  DEBUG: 0
 # Pip's cache doesn't store the python packages
 # https://pip.pypa.io/en/stable/reference/pip_install/#caching
 #
@@ -39,6 +42,7 @@ run:
     - python setup.py bdist_wheel
     # an alternative approach is to install and run:
     - pip install dist/*
+    - pipenv run env
     - pipenv run app
   # run the command here
   artifacts:
