@@ -5,7 +5,11 @@ from flask import Flask
 from flaskr import db, auth, blog
 
 
-def create_app(test_config=None):
+def create_app(test_config=None, *args, **kwargs):
+    print(f"test_config={test_config}\n"
+          f"args={args}\n"
+          f"kwargs={kwargs}\n")
+
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "flaskr.sqlite")

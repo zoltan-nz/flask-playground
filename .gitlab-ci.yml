@@ -37,7 +37,7 @@ test:
     - pipenv run cov
     - pipenv run cov_report
 
-run:
+deploy:
   script:
     - python setup.py bdist_wheel
     # an alternative approach is to install and run:
