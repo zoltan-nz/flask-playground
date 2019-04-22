@@ -94,3 +94,11 @@ $ pipenv install python-dotenv
 - [Pylint](https://www.pylint.org/)
 - [Flask extensions](https://nickjanetakis.com/blog/15-useful-flask-extensions-and-libraries-that-i-use-in-every-project)
 - [Flask with MongoDB Tutorial](https://medium.com/@riken.mehta/full-stack-tutorial-flask-react-docker-420da3543c91)
+
+## Heroku deployment notes
+
+It is required that `FLASK_APP=flaskr` environment variable being setup. Afterward the following CLI script can be run.
+
+```
+$ heroku run python3 -m flask init-db
+```
