@@ -97,6 +97,12 @@ $ pipenv install python-dotenv
 
 ## Heroku deployment notes
 
+Building production package:
+
+```
+python setup.py bdist_wheel
+```
+
 It is required that `FLASK_APP=flaskr` environment variable being setup. Afterward the following CLI script can be run.
 
 ```
