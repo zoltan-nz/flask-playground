@@ -11,6 +11,7 @@ pytest-watch = "*"
 coverage = "*"
 pylint = "*"
 pylint-flask = "*"
+pytest-cov = "*"
 
 [packages]
 flask = "*"
@@ -25,7 +26,10 @@ allow_prereleases = true
 
 [scripts]
 setup = "pipenv install --dev"
-app = "waitress-serve --call 'flaskr:create_app'"
+init-db = "flask init-db"
+app-prod = "waitress-serve --call 'flaskr:create_app'"
+app-watch = "pipenv run flask run"
 test = "pytest"
+test-watch = "ptw -- --testmon --cov"
 cov = "coverage run -m pytest"
-cov_report = "coverage report"
+cov-report = "coverage report"

@@ -27,9 +27,9 @@ $ pip install pipenv
 ```bash
 $ git clone git@github.com:zoltan-nz/flask-playground.git
 $ cd flask-playground
-$ PIPENV_VENV_IN_PROJECT=1 pipenv shell --fancy
-$ pipenv install
-$ FLASK_APP=flaskr FLASK_ENV=development FLASK_DEBUG=1 flask run
+$ PIPENV_VENV_IN_PROJECT=1 pipenv run setup
+$ pipenv run init-db
+$ pipenv run app-prod
 ```
 
 ## Development
@@ -43,7 +43,7 @@ $ pytest
 Test with watch:
 
 ```
-$ ptw
+$ pipenv run test-watch
 ```
 
 Lint:
@@ -56,6 +56,13 @@ Format:
 
 ```bash
 $ black **/*.py
+```
+
+## DX (Development Experience)
+
+```
+$ pipenv run test-watch
+$ DEBUG=1 pipenv run app-watch
 ```
 
 ## Initialize `pipenv` and `flask`
