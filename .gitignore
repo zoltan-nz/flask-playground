@@ -16,3 +16,6 @@ build/
 .venv
 .env
 .prettierrc
+*.whl
+db/*.sqlite
+.vscode

@@ -14,6 +14,6 @@ def client(app):
     return app.test_client()
 
 
-def test_index(client):
-    response = client.get("/hello")
-    assert b"Hello" in response.data
+def test_health_check(client):
+    response = client.get("/health-check")
+    assert b"FLASKR app is running." in response.data
