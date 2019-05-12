@@ -115,3 +115,11 @@ It is required that `FLASK_APP=flaskr` environment variable being setup. Afterwa
 ```
 $ heroku run python3 -m flask init-db
 ```
+
+## TODO
+
+- [ ] Add Dockerfile to run the app from Docker. (Install `pandas` in the container.)
+- [ ] Add a logic to download data from external API
+- [ ] Add `pandas` to analyse data
+- [ ] Add API endpoint using `Flask` to expose data analysis result
+- [ ] Add unit tests to cover all the functionality

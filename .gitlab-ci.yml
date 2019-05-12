@@ -34,5 +34,4 @@ before_script:
 test:
   script:
     - pipenv run test
-    - pipenv run cov
-    - pipenv run cov_report
+    - pipenv run cov-report

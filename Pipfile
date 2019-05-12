@@ -26,10 +26,12 @@ allow_prereleases = true
 
 [scripts]
 setup = "pipenv install --dev"
-init-db = "flask init-db"
+clean = "rm -rf .pytest_cache .tmontmp .coverage .testmondata htmlcov"
+init-db = "sh -c 'FLASK_APP=flaskr pipenv run flask init-db'"
 app-prod = "waitress-serve --call 'flaskr:create_app'"
-app-watch = "pipenv run flask run"
+app-watch = "sh -c 'FLASK_APP=flaskr pipenv run flask run'"
 test = "pytest"
 test-watch = "ptw -- --testmon --cov"
 cov = "coverage run -m pytest"
-cov-report = "coverage report"
+cov-report = "sh -c 'pipenv run cov && coverage report'"
+cov-html = "sh -c 'pipenv run cov && coverage html && open htmlcov/index.html'"
