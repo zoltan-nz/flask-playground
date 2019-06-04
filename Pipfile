@@ -33,8 +33,8 @@ init-db-prod = "sh -c 'FLASKR_SECRET_KEY='secret' FLASK_ENV=production FLASK_APP
 init-db-dev = "sh -c 'FLASK_ENV=development FLASK_APP=flaskr pipenv run flask init-db'"
 init-db-test = "sh -c 'FLASK_ENV=test FLASK_APP=flaskr pipenv run flask init-db'"
 
-server-prod = "sh -c 'FLASK_APP=flaskr ENVIRONMENT=production waitress-serve --call 'flaskr:create_app'"
-server-watch = "sh -c 'FLASK_APP=flaskr ENV=development pipenv run flask run'"
+server-prod = "sh -c 'FLASK_APP=flaskr FLASK_ENV=production FLASKR_SECRET_KEY='secret' waitress-serve --call flaskr:create_app'"
+server-watch = "sh -c 'FLASK_APP=flaskr FLASK_ENV=development pipenv run flask run'"
 
 lint = "pylint --load-plugins pylint_flask flaskr tests"
 format = "black ."

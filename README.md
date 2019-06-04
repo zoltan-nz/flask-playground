@@ -28,8 +28,8 @@ $ pip install pipenv
 $ git clone git@github.com:zoltan-nz/flask-playground.git
 $ cd flask-playground
 $ PIPENV_VENV_IN_PROJECT=1 pipenv run setup
-$ pipenv run init-db
-$ pipenv run app-prod
+$ pipenv run init-db-dev
+$ pipenv run server-watch
 ```
 
 ## Development

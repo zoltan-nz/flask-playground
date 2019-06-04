@@ -6,8 +6,8 @@ from flaskr import db, auth, blog
 from flaskr.config import get_config
 
 
-def create_app(test_config=None, *args, **kwargs):
-    app = Flask(__name__, instance_relative_config=True)
+def create_app(test_config=None):
+    app = Flask(__name__)
 
     try:
         if test_config is not None:
@@ -18,11 +18,6 @@ def create_app(test_config=None, *args, **kwargs):
     except ValueError as e:
         print(e)
         exit(1)
-
-    try:
-        makedirs(app.instance_path)
-    except OSError:
-        pass
 
     @app.route("/health-check")
     def health_check():

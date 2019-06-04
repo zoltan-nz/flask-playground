@@ -5,7 +5,7 @@ class Config:
     DEBUG = False
     TESTING = False
     SECRET_KEY = "dev"
-    DATABASE_URI = "./db/development.sqlite"
+    DATABASE_URI = "sqlite:///:memory:"
 
     def __init__(self):
         self.PORT = getenv("PORT", 5000)
@@ -13,11 +13,11 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    DATABASE_URI = "./db/development.sqlite"
 
 
 class RunningTestConfig(Config):
     TESTING = True
-    DATABASE_URI = "./db/test.sqlite"
 
 
 class ProductionConfig(Config):
