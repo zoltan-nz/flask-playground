@@ -15,20 +15,23 @@ def get_db():
     return g.db
 
 
-def close_db(e=None):
-    db = g.pop("db", None)
+def close_db(error=None):
+    database = g.pop("db", None)
 
-    if db is not None:
-        db.close()
+    if error is not None:
+        print(error)
+
+    if database is not None:
+        database.close()
 
 
 def init_db():
-    db = get_db()
+    database = get_db()
 
-    with current_app.open_resource("schema.sql") as f:
-        sql_script = f.read().decode("utf8")
+    with current_app.open_resource("schema.sql") as schema_file:
+        sql_script = schema_file.read().decode("utf8")
         print(sql_script)
-        db.executescript(sql_script)
+        database.executescript(sql_script)
 
 
 @click.command("init-db")

@@ -116,6 +116,19 @@ It is required that `FLASK_APP=flaskr` environment variable being setup. Afterwa
 $ heroku run python3 -m flask init-db
 ```
 
+## Gitlab CI notes
+
+## Google Cloud Deployment notes
+
+## Upgrading Python
+
+When a new version of Python is installed (with `pyenv`) rebuild the virtual environment with running the following commands.
+
+```bash
+$ pipenv --rm
+$ pipenv run setup
+```
+
 ## TODO
 
 - [ ] Add Dockerfile to run the app from Docker. (Install `pandas` in the container.)

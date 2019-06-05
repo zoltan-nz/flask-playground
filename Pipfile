@@ -18,6 +18,7 @@ wheel = "*"
 flask = "*"
 waitress = "*"
 pandas = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.7"
@@ -32,15 +33,12 @@ init-db = "pipenv run flask init-db"
 init-db-prod = "sh -c 'FLASKR_SECRET_KEY='secret' FLASK_ENV=production FLASK_APP=flaskr pipenv run init-db'"
 init-db-dev = "sh -c 'FLASK_ENV=development FLASK_APP=flaskr pipenv run flask init-db'"
 init-db-test = "sh -c 'FLASK_ENV=test FLASK_APP=flaskr pipenv run flask init-db'"
-
 server-prod = "sh -c 'FLASK_APP=flaskr FLASK_ENV=production FLASKR_SECRET_KEY='secret' waitress-serve --call flaskr:create_app'"
 server-watch = "sh -c 'FLASK_APP=flaskr FLASK_ENV=development pipenv run flask run'"
-
 lint = "pylint --load-plugins pylint_flask flaskr tests"
 format = "black ."
-
 test = "pytest"
-test-watch = "ptw -- --testmon --cov"
+test-watch = "ptw -- --testmon"
 cov = "coverage run -m pytest"
 cov-report = "sh -c 'pipenv run cov && coverage report'"
 cov-html = "sh -c 'pipenv run cov && coverage html && open htmlcov/index.html'"

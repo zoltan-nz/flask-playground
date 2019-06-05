@@ -5,10 +5,10 @@ class Config:
     DEBUG = False
     TESTING = False
     SECRET_KEY = "dev"
-    DATABASE_URI = "sqlite:///:memory:"
+    DATABASE_URI = "file::memory:?cache=shared"
 
     def __init__(self):
-        self.PORT = getenv("PORT", 5000)
+        self.PORT = getenv("PORT", "5000")
 
 
 class DevelopmentConfig(Config):

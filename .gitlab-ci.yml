@@ -32,10 +32,6 @@ before_script:
 
 test:
   script:
+    - pipenv run lint
     - pipenv run test
     - pipenv run cov-report
-
-run:
-  script:
-    - python setup.py bdist_wheel
-    - pip install dist/*

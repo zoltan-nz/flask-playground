@@ -1,11 +1,6 @@
 import pytest
 
-from flaskr.config import (
-    get_config,
-    Config,
-    DevelopmentConfig,
-    RunningTestConfig,
-)
+from flaskr.config import get_config, Config, DevelopmentConfig, RunningTestConfig
 
 
 def test_get_config_with_invalid_environment():
@@ -27,8 +22,8 @@ def test_defaults():
     assert config.DEBUG is False
     assert config.TESTING is False
     assert config.SECRET_KEY == "dev"
-    assert config.DATABASE_URI == "sqlite:///:memory:"
-    assert config.PORT == 5000
+    assert config.DATABASE_URI == "file::memory:?cache=shared"
+    assert config.PORT == "5000"
 
 
 def test_port(monkeypatch):
@@ -51,7 +46,7 @@ def test_development_config():
 def test_test_config():
     config = RunningTestConfig()
     assert config.TESTING is True
-    assert config.PORT == 5000
+    assert config.PORT == "5000"
 
 
 def test_secret_key(monkeypatch):
