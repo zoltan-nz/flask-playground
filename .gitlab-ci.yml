@@ -26,6 +26,12 @@ cache:
     - .venv/
 
 before_script:
+  - apt-get update && apt-get install -y \
+    locales \
+    && sed -i 's/^# *\(en_NZ.UTF-8\)/\1/' /etc/locale.gen \
+    && locale-gen \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
   - python -V # Print out python version for debugging
   - pip install pipenv
   - pipenv run setup

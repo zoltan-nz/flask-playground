@@ -116,6 +116,13 @@ It is required that `FLASK_APP=flaskr` environment variable being setup. Afterwa
 $ heroku run python3 -m flask init-db
 ```
 
+## Building a container for demo gitlab-runner
+
+```bash
+$ docker build -t flask-playground-gitlab-runner -f ./gitlab-runner.Dockerfile .
+$ docker run -it flask-playground-gitlab-runner /bin/bash
+```
+
 ## Gitlab CI notes
 
 ## Google Cloud Deployment notes

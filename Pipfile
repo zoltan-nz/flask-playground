@@ -13,12 +13,15 @@ pylint = "*"
 pylint-flask = "*"
 setuptools = "*"
 wheel = "*"
+mypy = "*"
+mypy-extensions="*"
 
 [packages]
 flask = "*"
 waitress = "*"
 pandas = "*"
 pylint = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.7"
@@ -29,6 +32,7 @@ allow_prereleases = true
 [scripts]
 setup = "pipenv install --dev"
 clean = "rm -rf .pytest_cache .tmontmp .coverage .testmondata htmlcov build dist flaskr.egg-info"
+lock-req = "sh -c 'pipenv lock -r > requirements.txt'"
 init-db = "pipenv run flask init-db"
 init-db-prod = "sh -c 'FLASKR_SECRET_KEY='secret' FLASK_ENV=production FLASK_APP=flaskr pipenv run init-db'"
 init-db-dev = "sh -c 'FLASK_ENV=development FLASK_APP=flaskr pipenv run flask init-db'"

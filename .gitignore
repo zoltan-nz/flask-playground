@@ -19,3 +19,4 @@ build/
 *.whl
 db/*.sqlite
 .vscode
+.mypy_cache
