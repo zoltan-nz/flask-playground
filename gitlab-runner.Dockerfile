@@ -1,11 +1,4 @@
-FROM python:3-slim
-
-RUN apt-get update && apt-get install -y \
-    locales \
-    && sed -i 's/^# *\(en_NZ.UTF-8\)/\1/' /etc/locale.gen \
-    && locale-gen \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+FROM zoltannz/python-with-gcloud
 
 RUN mkdir /home/app
 RUN useradd -d /home/app app
@@ -23,7 +16,7 @@ ENV LANG="en_NZ.UTF-8"
 ENV LC_ALL="en_NZ.UTF-8"
 ENV FLASK_APP=flaskr
 ENV FLASK_ENV=production
-ENV DEBUG: 0
+ENV DEBUG=0
 
 RUN pip install --user pipenv
 

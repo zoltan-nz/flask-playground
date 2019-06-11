@@ -1,10 +1,5 @@
-# This file is a template, and might need editing before it works on your project.
-# Official language image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/python/tags/
-image: python:3-slim
+image: zoltannz/python-with-gcloud
 
-# Change pip's cache directory to be inside the project directory since we can
-# only cache local items.
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PIPENV_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pipenv"
@@ -14,11 +9,7 @@ variables:
   FLASK_APP: flaskr
   FLASK_ENV: production
   DEBUG: 0
-# Pip's cache doesn't store the python packages
-# https://pip.pypa.io/en/stable/reference/pip_install/#caching
-#
-# If you want to also cache the installed packages, you have to install
-# them in a virtualenv and cache it as well.
+
 cache:
   paths:
     - .cache/pip
@@ -26,12 +17,6 @@ cache:
     - .venv/
 
 before_script:
-  - apt-get update
-  - apt-get install -y locales
-  - sed -i 's/^# *\(en_NZ.UTF-8\)/\1/' /etc/locale.gen
-  - locale-gen
-  - apt-get clean \
-  - rm -rf /var/lib/apt/lists/*
   - python -V # Print out python version for debugging
   - pip install pipenv
   - pipenv run setup
