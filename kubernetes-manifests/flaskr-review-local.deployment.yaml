@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: flaskr
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: flaskr
+  name: flaskr-admin-service-account
+  namespace: flaskr
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: flaskr
+  name: flaskr-admin-role
+rules:
+  - apiGroups: ["*"]
+    resources: ["ResourceAll"]
+    verbs: ["*"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: be-flaskr-admin
+  namespace: flaskr
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  name: flaskr-admin-role
+  kind: Role
+subjects:
+- kind: ServiceAccount
+  name: flaskr-admin-service-account
+  namespace: flaskr
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pv-claim
+  labels:
+    app: flaskr
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskr-review-deployment
+  namespace: flaskr
+  labels:
+    app: flaskr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaskr
+  template:
+    metadata:
+      labels:
+        app: flaskr
+    spec:
+      containers:
+        - name: flaskr
+          image: flaskr:latest
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+            - mountPath: /home/app/db
+              name: db
+      initContainers:
+        - name: flaskr-init
+          image: flaskr:latest
+          imagePullPolicy: Never
+          command: ['flask', 'init-db']
+          volumeMounts:
+            - mountPath: /home/app/db
+              name: db
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: db-pv-claim
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: flaskr
+  name: flaskr-review-load-balancer
+  namespace: flaskr
+spec:
+  selector:
+    app: flaskr
+  ports:
+  - protocol: TCP
+    port: 9090
+    targetPort: 8080
+  type: LoadBalancer

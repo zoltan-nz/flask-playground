@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskr-deployment
+  labels:
+    app: flaskr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flaskr
+  template:
+    metadata:
+      labels:
+        app: flaskr
+    spec:
+      containers:
+        - name: flaskr
+          image: flaskr:latest
+          ports:
+          - containerPort: 8080
