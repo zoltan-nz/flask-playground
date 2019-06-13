@@ -33,5 +33,4 @@ RUN pip install --user ./dist/*
 
 EXPOSE 8080
 
-#RUN flask init-db
 CMD ["waitress-serve", "--call", "flaskr:create_app"]
