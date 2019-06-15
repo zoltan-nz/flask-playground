@@ -10,5 +10,6 @@ instance
 .testmondata
 alpine-docker-setup.sh
 gitlab-runner.Dockerfile
+gc-service-account-key.json
 Procfile
 README.md

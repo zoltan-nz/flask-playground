@@ -82,12 +82,21 @@ kubectl expose deployment flaskr-review-deployment --type LoadBalancer --port 90
 ## Google Cloud Kubernetes implementation
 
 - [Deploying a language-specific app](https://cloud.google.com/kubernetes-engine/docs/quickstarts/deploying-a-language-specific-app)
-
+- [Gilab Runner and Kubernetes](https://medium.com/@davivc/how-to-set-up-gitlab-ci-cd-with-google-cloud-container-registry-and-kubernetes-fa88ab7b1295)
+ 
 Steps:
 
-1. Create a service account.
+1. Create a service account and download the authentication in json
 2. Build a container and upload it to registry
 3. Deploy the container
-4. Create a load balancer service to expose the url
+4. Create a load-balancer service to expose the url
 5. Create a volume and attach to the pod
 6. Add init container to run the database initialization
+
+Debug `.gitlab-ci.yml` with a local `gitlab-runner`:
+
+```bash
+$ gitlab-runner exec docker --env GC_PROJECT_ID="$(<./project-id.json)" --env GC_SERVICE_ACCOUNT_KEY="$(<./gc-service-account-key.json)" build
+```
+
+Important findings: update `.gcloudignore` to allow `./dist` upload to the GCloud Builder, otherwise the builder cannot find the required folder. (The default behaviour is ignoring everything from .gitignore list.)

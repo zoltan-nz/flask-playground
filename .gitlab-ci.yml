@@ -1,3 +1,10 @@
+stages:
+  - test
+  - build
+  - preview
+  - staging
+  - production
+
 image: zoltannz/python-with-gcloud
 
 variables:
@@ -22,7 +29,16 @@ before_script:
   - pipenv run setup
 
 test:
+  stage: test
   script:
     - pipenv run lint
     - pipenv run test
     - pipenv run cov-report
+
+build:
+  stage: build
+  script:
+    - pipenv run build
+    - echo $GC_SERVICE_ACCOUNT_KEY > gc-service-key.json
+    - gcloud auth activate-service-account --key-file gc-service-key.json
+    - gcloud builds --project ${GC_PROJECT_ID} submit --tag gcr.io/${GC_PROJECT_ID}/flask-playground:latest .

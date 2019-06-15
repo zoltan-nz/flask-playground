@@ -20,3 +20,4 @@ build/
 db/*.sqlite
 .vscode
 .mypy_cache
+*key.json
