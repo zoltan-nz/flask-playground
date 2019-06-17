@@ -7,6 +7,9 @@ stages:
 
 image: zoltannz/python-with-gcloud
 
+services:
+  - docker:dind
+
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   PIPENV_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pipenv"
@@ -16,6 +19,18 @@ variables:
   FLASK_APP: "flaskr"
   FLASK_ENV: "production"
   DEBUG: "false"
+  IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_BUILD_REF_NAME}"
+
+  # Note that if you're using the Kubernetes executor, the variable should be set to
+  # tcp://localhost:2375/ because of how the Kubernetes executor connects services
+  # to the job container
+  # DOCKER_HOST: tcp://localhost:2375/
+  #
+  # For non-Kubernetes executors, we use tcp://docker:2375/
+  # DOCKER_HOST: tcp://docker:2375/
+  # When using dind, it's wise to use the overlayfs driver for
+  # improved performance.
+  DOCKER_DRIVER: overlay2
 
 cache:
   paths:
@@ -30,15 +45,25 @@ before_script:
 
 test:
   stage: test
+  image: zoltannz/python-with-gcloud
   script:
     - pipenv run lint
     - pipenv run test
     - pipenv run cov-report
 
+# CI_BUILD_REF_NAME is injected by the Gilab Runner and contains the actual branch name.
+# Expected env variables:
+# - GC_SERVICE_ACCOUNT_KEY
+# - GC_PROJECT_ID
 build:
   stage: build
+  image: zoltannz/python-with-gcloud
+  services:
+    - docker:dind
   script:
     - pipenv run build
-    - echo $GC_SERVICE_ACCOUNT_KEY > gc-service-key.json
-    - gcloud auth activate-service-account --key-file gc-service-key.json
-    - gcloud builds --project ${GC_PROJECT_ID} submit --tag gcr.io/${GC_PROJECT_ID}/flask-playground:latest .
+    - echo $GC_SERVICE_ACCOUNT_KEY > gc-service-account-key.json
+    - gcloud auth activate-service-account --key-file gc-service-account-key.json
+    - cat gc-service-account-key.json | docker login -u _json_key --password-stdin https://gcr.io
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME

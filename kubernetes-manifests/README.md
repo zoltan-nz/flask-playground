@@ -100,3 +100,12 @@ $ gitlab-runner exec docker --env GC_PROJECT_ID="$(<./project-id.json)" --env GC
 ```
 
 Important findings: update `.gcloudignore` to allow `./dist` upload to the GCloud Builder, otherwise the builder cannot find the required folder. (The default behaviour is ignoring everything from .gitignore list.)
+
+Build docker image in GitLab. Add `docker:dind` service to the task.
+
+```
+build:
+  stage: build
+  services:
+    - docker:dind
+```
