@@ -109,3 +109,9 @@ build:
   services:
     - docker:dind
 ```
+
+Run docker-in-docker task in local environment:
+
+```bash
+gitlab-runner exec docker --env CI_BUILD_REF_NAME="maybe branch name" --env GC_PROJECT_ID="the-project-id" --env GC_SERVICE_ACCOUNT_KEY="$(<./gc-service-account-key.json)" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-privileged build
+```
