@@ -42,13 +42,32 @@ subjects:
   namespace: flaskr
 
 ---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: db-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/tmp/db-pv-volume"
+
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: db-pv-claim
+  namespace: flaskr
   labels:
     app: flaskr
 spec:
+  storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:
