@@ -122,3 +122,25 @@ Storage, volumes
 - Need a persistent volume claim
 
 Useful notes: https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+
+- Why `docker login -u _json_key`: https://cloud.google.com/container-registry/docs/advanced-authentication
+- Docker login password from STDIN: https://docs.docker.com/engine/reference/commandline/login/
+
+Overview about review apps: https://about.gitlab.com/2016/11/22/introducing-review-apps/
+
+Using `yaml` merge key: https://yaml.org/type/merge.html
+
+Predefined variables in Gitlab CI: https://docs.gitlab.com/ee/ci/variables/predefined_variables.html
+
+Deploying a containerized web application to Google Cloud Kubernetes: https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+
+Persistent Volumes on Google Cloud
+
+What is Ingress? https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+IMPORTANT! Because the Dockerfile created as non root container, have to setup a `securityContext` with the same `ID` as in Dockerfile.
+
+```
+securityContext:
+        fsGroup: 1024
+```

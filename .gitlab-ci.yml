@@ -1,7 +1,7 @@
 stages:
   - test
   - build
-  - preview
+  - review
   - staging
   - production
 
@@ -19,7 +19,8 @@ variables:
   FLASK_APP: "flaskr"
   FLASK_ENV: "production"
   DEBUG: "false"
-  IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_BUILD_REF_NAME}"
+  IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_COMMIT_REF_SLUG}"
+  APPS_DOMAIN: "${APPS_DOMAIN}"
 
   # Note that if you're using the Kubernetes executor, the variable should be set to
   # tcp://localhost:2375/ because of how the Kubernetes executor connects services
@@ -51,19 +52,56 @@ test:
     - pipenv run test
     - pipenv run cov-report
 
-# CI_BUILD_REF_NAME is injected by the Gilab Runner and contains the actual branch name.
+# CI_COMMIT_REF_NAME is injected by the GitLab Runner and contains the actual branch name.
+# CI_COMMIT_REF_SLUG is injected by the GitLab Runner and contains the optimized version of REF_NAME.
 # Expected env variables:
 # - GC_SERVICE_ACCOUNT_KEY
 # - GC_PROJECT_ID
-build:
-  stage: build
+.auth: &auth
   image: zoltannz/python-with-gcloud
+  before_script:
+    - echo $GC_SERVICE_ACCOUNT_KEY > /tmp/gc-service-account-key.json
+    - gcloud auth activate-service-account --key-file /tmp/gc-service-account-key.json
+  after_script:
+    - rm /tmp/gc-service-account-key.json
+
+build:
+  << : *auth
+  stage: build
   services:
     - docker:dind
   script:
     - pipenv run build
-    - echo $GC_SERVICE_ACCOUNT_KEY > gc-service-account-key.json
-    - gcloud auth activate-service-account --key-file gc-service-account-key.json
-    - cat gc-service-account-key.json | docker login -u _json_key --password-stdin https://gcr.io
+    - cat /tmp/gc-service-account-key.json | docker login -u _json_key --password-stdin https://gcr.io
     - docker build -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
+
+start_review:
+  << : *auth
+  stage: review
+  script:
+    - gcloud create deployment $CI_BUILD_REF_SLUG --image=$IMAGE_NAME
+  environment:
+    name: review/$CI_BUILD_REF_SLUG
+    url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN
+    on_stop: stop_review
+  only:
+    - branches
+  except:
+    - master
+
+stop_review:
+  << : *auth
+  stage: review
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - gcloud stop $IMAGE_NAME
+  when: manual
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    action: stop
+  only:
+    - branches
+  except:
+    - master
