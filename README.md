@@ -8,8 +8,8 @@
 
 ```bash
 # Mac Mojave hack
-$ CFLAGS="-I$(xcrun --show-sdk-path)/usr/include" pyenv install 3.7.3
-$ pyenv global 3.7.3
+$ CFLAGS="-I$(xcrun --show-sdk-path)/usr/include" pyenv install 3.7.4
+$ pyenv global 3.7.4
 
 # Check installation
 $ pyenv versions
@@ -123,9 +123,9 @@ $ docker build -t flask-playground-gitlab-runner -f ./gitlab-runner.Dockerfile .
 $ docker run -it flask-playground-gitlab-runner /bin/bash
 ```
 
-## Gitlab CI notes
+## Use GitLab Runner, Kubernetes and Google Cloud
 
-## Google Cloud Deployment notes
+[Deploy using Kubernetes](./kubernetes-manifests/README.md)
 
 ## Upgrading Python
 

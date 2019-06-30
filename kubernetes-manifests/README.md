@@ -4,7 +4,10 @@ https://github.com/GoogleCloudPlatform/cloud-code-samples/tree/master/python/pyt
 
 ## Using local Docker for Mac Kubernetes
 
-Prerequisite: Docker for Mac Kubernetes is running on local machine.
+Prerequisite:
+ 
+- Docker for Mac Kubernetes is running on local machine.
+- Alternative option on Linux: [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) + [Kind](https://kind.sigs.k8s.io/)
 
 Create a namespace
 
