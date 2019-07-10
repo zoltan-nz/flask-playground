@@ -144,3 +144,17 @@ IMPORTANT! Because the Dockerfile created as non root container, have to setup a
 securityContext:
         fsGroup: 1024
 ```
+
+Substitute environment variables in Kubernetes manifest files. Use `envsubst`. Mac installation: `brew install gettext`.
+```bash
+$ CI_COMMIT_REF_SLUG=demo envsubst < ./kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -
+```
+
+Add dynamic image tag management using `envsubst`.
+- new commands in `Pipfile`
+- using argument in `Dockerfile`
+
+```
+build-docker = "sh -c 'pipenv run build && IMAGE_TAG=${IMAGE_TAG:-latest} docker build --build-arg flaskr_image_name=flaskr:$IMAGE_TAG -t flaskr:$IMAGE_TAG .'"
+deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
+```

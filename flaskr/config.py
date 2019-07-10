@@ -6,6 +6,7 @@ class Config:
     TESTING = False
     SECRET_KEY = "dev"
     DATABASE_URI = "file::memory:?cache=shared"
+    FLASKR_IMAGE_NAME = getenv("FLASKR_IMAGE_NAME")
 
     def __init__(self):
         self.PORT = getenv("PORT", "5000")

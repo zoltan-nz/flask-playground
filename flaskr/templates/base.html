@@ -41,6 +41,12 @@
         {% block content %}
         {% endblock %}
     </section>
+
+    <footer>
+        {% if flaskr_image_name %}
+            Docker Image Name: {{ flaskr_image_name }}
+        {% endif %}
+    </footer>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

@@ -7,7 +7,7 @@ from flask import (
     redirect,
     url_for,
     abort,
-)
+    current_app)
 
 from flaskr.auth import login_required
 from flaskr.db import get_db
@@ -24,7 +24,10 @@ def index():
         FROM post p JOIN user u ON p.author_id = u.id ORDER BY created DESC
         """
     ).fetchall()
-    return render_template("blog/index.html", posts=posts)
+
+    flaskr_image_name = current_app.config["FLASKR_IMAGE_NAME"]
+
+    return render_template("blog/index.html", posts=posts, flaskr_image_name=flaskr_image_name)
 
 
 @BLOG_BP.route("/create", methods=("GET", "POST"))

@@ -9,7 +9,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    app: flaskr
+    app: flaskr-${IMAGE_TAG}
   name: flaskr-admin-service-account
   namespace: flaskr
 
@@ -65,7 +65,7 @@ metadata:
   name: db-pv-claim
   namespace: flaskr
   labels:
-    app: flaskr
+    app: flaskr-${IMAGE_TAG}
 spec:
   storageClassName: manual
   accessModes:
@@ -79,23 +79,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flaskr-review-deployment
+  name: flaskr-review-deployment-${IMAGE_TAG}
   namespace: flaskr
   labels:
-    app: flaskr
+    app: flaskr-${IMAGE_TAG}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flaskr
+      app: flaskr-${IMAGE_TAG}
   template:
     metadata:
       labels:
-        app: flaskr
+        app: flaskr-${IMAGE_TAG}
     spec:
       containers:
         - name: flaskr
-          image: flaskr:latest
+          image: flaskr:${IMAGE_TAG}
           imagePullPolicy: Never
           ports:
           - containerPort: 8080
@@ -104,7 +104,7 @@ spec:
               name: db
       initContainers:
         - name: flaskr-init
-          image: flaskr:latest
+          image: flaskr:${IMAGE_TAG}
           imagePullPolicy: Never
           command: ['flask', 'init-db']
           volumeMounts:
@@ -121,12 +121,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: flaskr
-  name: flaskr-review-load-balancer
+    app: flaskr-${IMAGE_TAG}
+  name: flaskr-review-load-balancer-${IMAGE_TAG}
   namespace: flaskr
 spec:
   selector:
-    app: flaskr
+    app: flaskr-${IMAGE_TAG}
   ports:
   - protocol: TCP
     port: 9090
