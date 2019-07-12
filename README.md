@@ -116,11 +116,36 @@ It is required that `FLASK_APP=flaskr` environment variable being setup. Afterwa
 $ heroku run python3 -m flask init-db
 ```
 
-## Building a container for demo gitlab-runner
+## Run a Docker locally
+
+0. Install Docker for Mac
+1. Build the docker image: `flaskr:latest`.
+2. Create a Volume for database. Volume name is `db`.
+3. Initialize the database.
+4. Run the image and attach the volume and bind a port.
+
 
 ```bash
-$ docker build -t flask-playground-gitlab-runner -f ./gitlab-runner.Dockerfile .
-$ docker run -it flask-playground-gitlab-runner /bin/bash
+$ pipenv run build-docker
+$ docker volume create db
+$ docker run -it -p 8080:8080 -v db:/home/app/db flaskr:latest flask init-db 
+$ docker run -it -p 8080:8080 -v db:/home/app/db flaskr:latest
+$ open http://localhost:8080
+```
+
+## Run Kubernetes locally (Instructions for Mac)
+
+0. Install Docker for Mac.
+1. Turn on Kubernetes support.
+2. Check `kubectl` command availability.
+3. Install `octant` for visibility.
+4. Run deployment configuration.
+
+```bash
+$ brew install octant
+$ octant
+$ pipenv run deploy-kubernetes-local
+$ open http://localhost:9090
 ```
 
 ## Use GitLab Runner, Kubernetes and Google Cloud
@@ -135,11 +160,3 @@ When a new version of Python is installed (with `pyenv`) rebuild the virtual env
 $ pipenv --rm
 $ pipenv run setup
 ```
-
-## TODO
-
-- [ ] Add Dockerfile to run the app from Docker. (Install `pandas` in the container.)
-- [ ] Add a logic to download data from external API
-- [ ] Add `pandas` to analyse data
-- [ ] Add API endpoint using `Flask` to expose data analysis result
-- [ ] Add unit tests to cover all the functionality

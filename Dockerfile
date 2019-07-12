@@ -17,11 +17,13 @@ RUN chown 1024:1024 /home/app/db
 VOLUME /home/app/db
 
 ARG flaskr_secret_key='rewrite this with docker run -e FLASKR_SECRET_KEY=realsecret'
+ARG flaskr_image_name='pass this value when build the image with docker build --build-arg flaskr_image_name=demo'
 
 ENV FLASK_APP=flaskr
 ENV FLASK_ENV=production
 ENV FLASKR_DATABASE_URI=/home/app/db/production.sqlite
 ENV FLASKR_SECRET_KEY=$flaskr_secret_key
+ENV FLASKR_IMAGE_NAME=$flaskr_image_name
 
 ENV PATH=/home/app/.local/bin:${PATH}
 
