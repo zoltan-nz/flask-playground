@@ -158,3 +158,5 @@ Add dynamic image tag management using `envsubst`.
 build-docker = "sh -c 'pipenv run build && IMAGE_TAG=${IMAGE_TAG:-latest} docker build --build-arg flaskr_image_name=flaskr:$IMAGE_TAG -t flaskr:$IMAGE_TAG .'"
 deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
 ```
+
+Next step: add ingress controller to manage subdomains!
