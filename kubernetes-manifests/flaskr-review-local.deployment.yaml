@@ -132,3 +132,35 @@ spec:
     port: 9090
     targetPort: 8080
   type: LoadBalancer
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: flaskr-${IMAGE_TAG}
+  name: flaskr-review-ingress-${IMAGE_TAG}
+  namespace: flaskr
+spec:
+  backend:
+    serviceName: flaskr-review-load-balancer-${IMAGE_TAG}
+    servicePort: 9090
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: flaskr-${IMAGE_TAG}
+  name: flaskr-review-virtual-host-${IMAGE_TAG}
+  namespace: flaskr
+spec:
+  rules:
+  - host: ${IMAGE_TAG}.127.0.0.1.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: flaskr-review-load-balancer-${IMAGE_TAG}
+          servicePort: 9090

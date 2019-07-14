@@ -139,8 +139,6 @@ Deploying a containerized web application to Google Cloud Kubernetes: https://cl
 
 Persistent Volumes on Google Cloud
 
-What is Ingress? https://kubernetes.io/docs/concepts/services-networking/ingress/
-
 IMPORTANT! Because the Dockerfile created as non root container, have to setup a `securityContext` with the same `ID` as in Dockerfile.
 
 ```
@@ -162,4 +160,54 @@ build-docker = "sh -c 'pipenv run build && IMAGE_TAG=${IMAGE_TAG:-latest} docker
 deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
 ```
 
-Next step: add ingress controller to manage subdomains!
+## Setup Ingress Controller
+
+What is Ingress? https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+Goal is to provide dynamic domain names for previewing development branch.
+
+First install NGINX Ingress Controller in Kubernetes. Details: https://kubernetes.github.io/ingress-nginx/deploy/
+
+Docker for Mac:
+
+```
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/cloud-generic.yaml
+```
+
+Most default Ingress redirect:
+
+```
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: flaskr-${IMAGE_TAG}
+  name: flaskr-review-ingress-${IMAGE_TAG}
+  namespace: flaskr
+spec:
+  backend:
+    serviceName: flaskr-review-load-balancer-${IMAGE_TAG}
+    servicePort: 9090
+```
+
+Using free DNS resolver:
+
+- lvh.me, example: branch-name.lvh.me
+- xip.io, example: branch-name.127.0.0.1.xip.io
+- nip.io, example: branch-name.127.0.0.1.nip.io
+
+It works!
+
+```
+$ IMAGE_TAG=demo pipenv run deploy-kubernetes-local
+$ IMAGE_TAG=branch-name pipenv run deploy-kubernetes-local
+```
+
+Different urls will show different version of the application: 
+- demo.127.0.0.1.xip.io,
+- branch-name.127.0.0.1.xip.io
+
+Consideration. Kubernetes doesn't reload the image if it is built with the same tag as before. Suggested approach is to use git hash as tag. (https://github.com/kubernetes/kubernetes/issues/33664). An option could be change the scale to 0 and back to normal replica number.
+
+Example: `kubectl scale --replicas=1 -n flaskr deployment flaskr-review-deployment-demo`
