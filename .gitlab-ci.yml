@@ -19,6 +19,7 @@ variables:
   FLASK_APP: "flaskr"
   FLASK_ENV: "production"
   DEBUG: "false"
+  IMAGE_TAG: "${CI_COMMIT_REF_SLUG}"
   IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_COMMIT_REF_SLUG}"
   APPS_DOMAIN: "${APPS_DOMAIN}"
 
@@ -80,15 +81,15 @@ start_review:
   << : *auth
   stage: review
   script:
-    - gcloud create deployment $CI_BUILD_REF_SLUG --image=$IMAGE_NAME
+    - gcloud deploy ... # TODO
   environment:
     name: review/$CI_BUILD_REF_SLUG
-    url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN
+    url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN.xip.io
     on_stop: stop_review
-  only:
-    - branches
-  except:
-    - master
+#  only:
+#    - branches
+#  except:
+#    - master
 
 stop_review:
   << : *auth
@@ -101,7 +102,7 @@ stop_review:
   environment:
     name: review/$CI_BUILD_REF_NAME
     action: stop
-  only:
-    - branches
-  except:
-    - master
+#  only:
+#    - branches
+#  except:
+#    - master

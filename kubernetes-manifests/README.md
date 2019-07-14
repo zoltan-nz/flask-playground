@@ -119,7 +119,7 @@ Run docker-in-docker task in local environment:
 gitlab-runner exec docker --env CI_BUILD_REF_NAME="maybe branch name" --env GC_PROJECT_ID="the-project-id" --env GC_SERVICE_ACCOUNT_KEY="$(<./gc-service-account-key.json)" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-privileged build
 ```
 
-Storage, volumes
+## Storage, volumes
 
 - Need a persistent volume
 - Need a persistent volume claim
@@ -211,3 +211,22 @@ Different urls will show different version of the application:
 Consideration. Kubernetes doesn't reload the image if it is built with the same tag as before. Suggested approach is to use git hash as tag. (https://github.com/kubernetes/kubernetes/issues/33664). An option could be change the scale to 0 and back to normal replica number.
 
 Example: `kubectl scale --replicas=1 -n flaskr deployment flaskr-review-deployment-demo`
+
+## Setup dynamic review deployment with GitLab CI and Google Cloud Platform Kubernetes
+
+Changes are implemented in `kubernetes-manifests/flaskr-review-gcp.deployment.yaml`.
+
+Important environment variables:
+
+- `IMAGE_TAG` - using the GitLab CI provided slug string based on the branch name.
+- `IMAGE_NAME` - points to Google Cloud registry where the image will be uploaded.
+- `APP_DOMAIN` - Kubernetes Cluster main IP address.
+- `GC_PROJECT_ID` - Google Cloud project id.
+
+Prerequisite: downloaded key file saved in json format.
+
+Test it locally:
+
+```
+$ gitlab-runner exec docker --env GC_PROJECT_ID="$(<./gc-project-id.txt)" --env GC_SERVICE_ACCOUNT_KEY="$(<./gc-service-account-key.json)" build
+```

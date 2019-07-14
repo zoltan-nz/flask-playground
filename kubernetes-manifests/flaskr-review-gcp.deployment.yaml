@@ -25,22 +25,22 @@ metadata:
   name: flaskr-review-deployment
   namespace: flaskr-review
   labels:
-    app: flaskr-review-app
+    app: flaskr-review-app-${IMAGE_TAG}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flaskr-review-app
+      app: flaskr-review-app-${IMAGE_TAG}
   template:
     metadata:
       labels:
-        app: flaskr-review-app
+        app: flaskr-review-app-${IMAGE_TAG}
     spec:
       securityContext:
         fsGroup: 1024
       containers:
         - name: flaskr-review
-          image: gcr.io/{{GC_PROJECT_ID}}/flask-playground:review-1
+          image: ${IMAGE_NAME}
           ports:
           - containerPort: 8080
           volumeMounts:
@@ -48,7 +48,7 @@ spec:
               name: db
       initContainers:
         - name: flaskr-init
-          image: gcr.io/{{GC_PROJECT_ID}}/flask-playground:review-1
+          image: ${IMAGE_NAME}
           command: ['flask', 'init-db']
           volumeMounts:
             - mountPath: /home/app/db
@@ -64,32 +64,32 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: flaskr-review-app
-  name: flaskr-review-node-port
+    app: flaskr-review-app-${IMAGE_TAG}
+  name: flaskr-review-load-balancer-${IMAGE_TAG}
   namespace: flaskr-review
 spec:
   selector:
-    app: flaskr-review
-  ports:
-  - protocol: TCP
-    port: 9090
-    targetPort: 8080
-  type: NodePort
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: flaskr-review-app
-  name: flaskr-review-load-balancer
-  namespace: flaskr-review
-spec:
-  selector:
-    app: flaskr-review-app
+    app: flaskr-review-app-${IMAGE_TAG}
   ports:
   - protocol: TCP
     port: 9090
     targetPort: 8080
   type: LoadBalancer
+
+---
+
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: flaskr-review-app-${IMAGE_TAG}
+  name: flaskr-review-virtual-host-${IMAGE_TAG}
+  namespace: flaskr-review
+spec:
+  rules:
+  - host: ${IMAGE_TAG}.${APPS_DOMAIN}.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: flaskr-review-load-balancer-${IMAGE_TAG}
+          servicePort: 9090

@@ -21,4 +21,5 @@ build/
 db/*.sqlite
 .vscode
 .mypy_cache
-*key.json
+gc-service-account-key.json
+gc-project-id.txt
