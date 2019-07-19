@@ -22,7 +22,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flaskr-review-deployment
+  name: flaskr-review-deployment-${IMAGE_TAG}
   namespace: flaskr-review
   labels:
     app: flaskr-review-app-${IMAGE_TAG}
@@ -78,7 +78,7 @@ spec:
 
 ---
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:

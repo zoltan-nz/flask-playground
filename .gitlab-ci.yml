@@ -58,13 +58,18 @@ test:
 # Expected env variables:
 # - GC_SERVICE_ACCOUNT_KEY
 # - GC_PROJECT_ID
+# - GC_CLUSTER_NAME
+# - GC_ZONE
 .auth: &auth
   image: zoltannz/python-with-gcloud
   before_script:
     - echo $GC_SERVICE_ACCOUNT_KEY > /tmp/gc-service-account-key.json
     - gcloud auth activate-service-account --key-file /tmp/gc-service-account-key.json
+    - gcloud config set project ${GC_PROJECT_ID}
+    - gcloud container clusters get-credentials ${GC_CLUSTER_NAME} --zone ${GC_ZONE}
   after_script:
     - rm /tmp/gc-service-account-key.json
+    - rm -rf ~/.kube
 
 build:
   << : *auth
@@ -74,22 +79,23 @@ build:
   script:
     - pipenv run build
     - cat /tmp/gc-service-account-key.json | docker login -u _json_key --password-stdin https://gcr.io
-    - docker build -t $IMAGE_NAME .
+    - docker build --build-arg flaskr_image_name=$IMAGE_TAG -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
 
 start_review:
   << : *auth
   stage: review
   script:
-    - gcloud deploy ... # TODO
+
+    - envsubst < ./kubernetes-manifests/flaskr-review-gcp.deployment.yaml | kubectl apply -f -
   environment:
     name: review/$CI_BUILD_REF_SLUG
     url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN.xip.io
     on_stop: stop_review
-#  only:
-#    - branches
-#  except:
-#    - master
+  only:
+    - branches
+  except:
+    - master
 
 stop_review:
   << : *auth
@@ -97,12 +103,14 @@ stop_review:
   variables:
     GIT_STRATEGY: none
   script:
-    - gcloud stop $IMAGE_NAME
+    - kubectl delete deployments -n flaskr-review flaskr-review-deployment-${IMAGE_TAG}
+    - kubectl delete ingress.extensions -n flaskr-review flaskr-review-virutal-host-${IMAGE_TAG}
+    - kubectl delete service -n flaskr-review flaskr-review-load-balancer-${IMAGE_TAG}
   when: manual
   environment:
     name: review/$CI_BUILD_REF_NAME
     action: stop
-#  only:
-#    - branches
-#  except:
-#    - master
+  only:
+    - branches
+  except:
+    - master
