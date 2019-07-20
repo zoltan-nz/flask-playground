@@ -108,7 +108,7 @@ stop_review:
     - kubectl delete service -n flaskr-review flaskr-review-load-balancer-${IMAGE_TAG}
   when: manual
   environment:
-    name: review/$CI_BUILD_REF_NAME
+    name: review/$CI_BUILD_REF_SLUG
     action: stop
   only:
     - branches
