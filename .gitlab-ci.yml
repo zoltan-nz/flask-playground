@@ -21,7 +21,6 @@ variables:
   DEBUG: "false"
   IMAGE_TAG: "${CI_COMMIT_REF_SLUG}"
   IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_COMMIT_REF_SLUG}"
-  APPS_DOMAIN: "${APPS_DOMAIN}"
 
   # Note that if you're using the Kubernetes executor, the variable should be set to
   # tcp://localhost:2375/ because of how the Kubernetes executor connects services
@@ -60,6 +59,7 @@ test:
 # - GC_PROJECT_ID
 # - GC_CLUSTER_NAME
 # - GC_ZONE
+# - APPS_DOMAIN
 .auth: &auth
   image: zoltannz/python-with-gcloud
   before_script:
