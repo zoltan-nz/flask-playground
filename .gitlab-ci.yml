@@ -25,13 +25,17 @@ variables:
   # Note that if you're using the Kubernetes executor, the variable should be set to
   # tcp://localhost:2375/ because of how the Kubernetes executor connects services
   # to the job container
-  # DOCKER_HOST: tcp://localhost:2375/
-  #
+  DOCKER_HOST: tcp://localhost:2375
+
   # For non-Kubernetes executors, we use tcp://docker:2375/
-  # DOCKER_HOST: tcp://docker:2375/
+  # DOCKER_HOST: tcp://docker:2375
+
   # When using dind, it's wise to use the overlayfs driver for
   # improved performance.
   DOCKER_DRIVER: overlay2
+
+  # The usage of docker:dind works only if TLS is disabled
+  DOCKER_TLS_CERTDIR: ""
 
 cache:
   paths:

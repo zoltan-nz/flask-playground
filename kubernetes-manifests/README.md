@@ -119,6 +119,22 @@ Run docker-in-docker task in local environment:
 gitlab-runner exec docker --env CI_BUILD_REF_NAME="maybe branch name" --env GC_PROJECT_ID="the-project-id" --env GC_SERVICE_ACCOUNT_KEY="$(<./gc-service-account-key.json)" --docker-volumes /var/run/docker.sock:/var/run/docker.sock --docker-privileged build
 ```
 
+### Troubleshooting `dind` in Kubernetes
+
+A security restriction changed how Docker and `dind` works which broke the standard implementation. More details in this [blogpost](https://about.gitlab.com/2019/07/31/docker-in-docker-with-docker-19-dot-03/). 
+
+The following has to be implemented in `.gitlab-ci.yml`:
+
+```
+variables:
+    DOCKER_HOST: "tcp://localhost:2375"
+    DOCKER_TLS_CERTDIR: ""
+    DOCKER_DRIVER: overlay2
+
+services:
+    - docker:dind
+```
+
 ## Storage, volumes
 
 - Need a persistent volume
