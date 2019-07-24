@@ -41,6 +41,7 @@ spec:
       containers:
         - name: flaskr-review
           image: ${IMAGE_NAME}
+          imagePullPolicy: Always
           ports:
           - containerPort: 8080
           volumeMounts:
@@ -49,6 +50,7 @@ spec:
       initContainers:
         - name: flaskr-init
           image: ${IMAGE_NAME}
+          imagePullPolicy: Always
           command: ['flask', 'init-db']
           volumeMounts:
             - mountPath: /home/app/db

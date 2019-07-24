@@ -40,7 +40,6 @@ variables:
 cache:
   paths:
     - .cache/pip
-    - .cache/pipenv
     - .venv/
 
 before_script:
