@@ -89,7 +89,6 @@ start_review:
   << : *auth
   stage: review
   script:
-
     - envsubst < ./kubernetes-manifests/flaskr-review-gcp.deployment.yaml | kubectl apply -f -
   environment:
     name: review/$CI_BUILD_REF_SLUG
@@ -107,8 +106,9 @@ stop_review:
     GIT_STRATEGY: none
   script:
     - kubectl delete deployments -n flaskr-review flaskr-review-deployment-${IMAGE_TAG}
-    - kubectl delete ingresses.extensions -n flaskr-review flaskr-review-virutal-host-${IMAGE_TAG}
+    - kubectl delete ingresses.extensions -n flaskr-review flaskr-review-virtual-host-${IMAGE_TAG}
     - kubectl delete service -n flaskr-review flaskr-review-load-balancer-${IMAGE_TAG}
+    - gcloud container images delete ${IMAGE_NAME} --force-delete-tags --quiet
   when: manual
   environment:
     name: review/$CI_BUILD_REF_SLUG
