@@ -70,6 +70,7 @@ test:
     - gcloud auth activate-service-account --key-file /tmp/gc-service-account-key.json
     - gcloud config set project ${GC_PROJECT_ID}
     - gcloud container clusters get-credentials ${GC_CLUSTER_NAME} --zone ${GC_ZONE}
+    - gcloud auth configure-docker --quiet
   after_script:
     - rm /tmp/gc-service-account-key.json
     - rm -rf ~/.kube
@@ -92,7 +93,7 @@ start_review:
     - envsubst < ./kubernetes-manifests/flaskr-review-gcp.deployment.yaml | kubectl apply -f -
   environment:
     name: review/$CI_BUILD_REF_SLUG
-    url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN.xip.io
+    url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN
     on_stop: stop_review
   only:
     - branches
@@ -109,6 +110,7 @@ stop_review:
     - kubectl delete ingresses.extensions -n flaskr-review flaskr-review-virtual-host-${IMAGE_TAG}
     - kubectl delete service -n flaskr-review flaskr-review-load-balancer-${IMAGE_TAG}
     - gcloud container images delete ${IMAGE_NAME} --force-delete-tags --quiet
+  allow_failure: true
   when: manual
   environment:
     name: review/$CI_BUILD_REF_SLUG

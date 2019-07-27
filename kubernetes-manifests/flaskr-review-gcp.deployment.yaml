@@ -87,7 +87,7 @@ metadata:
   namespace: flaskr-review
 spec:
   rules:
-  - host: ${IMAGE_TAG}.${APPS_DOMAIN}.xip.io
+  - host: ${IMAGE_TAG}.${APPS_DOMAIN}
     http:
       paths:
       - backend:
