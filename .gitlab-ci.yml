@@ -1,6 +1,5 @@
 stages:
   - test
-  - build
   - review
   - staging
   - production
@@ -75,9 +74,7 @@ test:
     - rm /tmp/gc-service-account-key.json
     - rm -rf ~/.kube
 
-build:
-  << : *auth
-  stage: build
+.build_image: &build_image
   services:
     - docker:dind
   script:
@@ -86,7 +83,14 @@ build:
     - docker build --build-arg flaskr_image_name=$IMAGE_TAG -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
 
-start_review:
+review_build:
+  << : *auth
+  << : *build_image
+  stage: review
+  environment:
+    name: review/$CI_BUILD_REF_SLUG
+
+review_deploy:
   << : *auth
   stage: review
   script:
@@ -94,13 +98,13 @@ start_review:
   environment:
     name: review/$CI_BUILD_REF_SLUG
     url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN
-    on_stop: stop_review
+    on_stop: review_clean
   only:
     - branches
   except:
     - master
 
-stop_review:
+review_clean:
   << : *auth
   stage: review
   variables:
@@ -118,4 +122,54 @@ stop_review:
   only:
     - branches
   except:
+    - master
+
+staging_build:
+  << : *auth
+  << : *build_image
+  stage: staging
+  environment:
+    name: staging
+  only:
+    - master
+
+staging_deploy:
+  << : *auth
+  stage: staging
+  script:
+    - envsubst < ./kubernetes-manifests/flaskr-staging-gcp.deployment.yaml | kubectl apply -f -
+  environment:
+    name: staging
+    url: http://staging.$APPS_DOMAIN
+    on_stop: staging_clean
+  only:
+    - master
+
+staging_clean:
+  << : *auth
+  stage: staging
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - kubectl delete deployments -n flaskr-staging flaskr-staging-deployment-${IMAGE_TAG}
+    - kubectl delete ingresses.extensions -n flaskr-staging flaskr-staging-virtual-host-${IMAGE_TAG}
+    - kubectl delete service -n flaskr-staging flaskr-staging-load-balancer-${IMAGE_TAG}
+  allow_failure: true
+  when: manual
+  environment:
+    name: staging
+    action: stop
+  only:
+    - master
+
+production:
+  << : *auth
+  stage: production
+  script:
+    - envsubst < ./kubernetes-manifests/flaskr-production-gcp.deployment.yaml | kubectl apply -f -
+  when: manual
+  environment:
+    name: production
+    url: http://$APPS_DOMAIN
+  only:
     - master

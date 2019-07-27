@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: flaskr-review
+  name: flaskr-production
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: flaskr-review-persistent-volume-claim
-  namespace: flaskr-review
+  name: flaskr-production-persistent-volume-claim
+  namespace: flaskr-production
 spec:
   accessModes:
     - ReadWriteOnce
@@ -22,24 +22,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flaskr-review-deployment-${IMAGE_TAG}
-  namespace: flaskr-review
+  name: flaskr-production-deployment
+  namespace: flaskr-production
   labels:
-    app: flaskr-review-app-${IMAGE_TAG}
+    app: flaskr-production-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flaskr-review-app-${IMAGE_TAG}
+      app: flaskr-production-app
   template:
     metadata:
       labels:
-        app: flaskr-review-app-${IMAGE_TAG}
+        app: flaskr-production-app
     spec:
       securityContext:
         fsGroup: 1024
       containers:
-        - name: flaskr-review
+        - name: flaskr-production
           image: ${IMAGE_NAME}
           ports:
           - containerPort: 8080
@@ -47,7 +47,7 @@ spec:
             - mountPath: /home/app/db
               name: db
       initContainers:
-        - name: flaskr-review-init
+        - name: flaskr-production-init
           image: ${IMAGE_NAME}
           command: ['flask', 'init-db']
           volumeMounts:
@@ -56,7 +56,7 @@ spec:
       volumes:
         - name: db
           persistentVolumeClaim:
-            claimName: flaskr-review-persistent-volume-claim
+            claimName: flaskr-production-persistent-volume-claim
 
 ---
 
@@ -64,12 +64,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: flaskr-review-app-${IMAGE_TAG}
-  name: flaskr-review-load-balancer-${IMAGE_TAG}
-  namespace: flaskr-review
+    app: flaskr-production-app
+  name: flaskr-production-load-balancer
+  namespace: flaskr-production
 spec:
   selector:
-    app: flaskr-review-app-${IMAGE_TAG}
+    app: flaskr-production-app
   ports:
   - protocol: TCP
     port: 9090
@@ -82,14 +82,14 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:
-    app: flaskr-review-app-${IMAGE_TAG}
-  name: flaskr-review-virtual-host-${IMAGE_TAG}
-  namespace: flaskr-review
+    app: flaskr-production-app
+  name: flaskr-production-virtual-host
+  namespace: flaskr-production
 spec:
   rules:
-  - host: ${IMAGE_TAG}.${APPS_DOMAIN}
+  - host: ${APPS_DOMAIN}
     http:
       paths:
       - backend:
-          serviceName: flaskr-review-load-balancer-${IMAGE_TAG}
+          serviceName: flaskr-production-load-balancer
           servicePort: 9090

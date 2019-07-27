@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: flaskr-review
+  name: flaskr-staging
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: flaskr-review-persistent-volume-claim
-  namespace: flaskr-review
+  name: flaskr-staging-persistent-volume-claim
+  namespace: flaskr-staging
 spec:
   accessModes:
     - ReadWriteOnce
@@ -22,24 +22,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flaskr-review-deployment-${IMAGE_TAG}
-  namespace: flaskr-review
+  name: flaskr-staging-deployment-${IMAGE_TAG}
+  namespace: flaskr-staging
   labels:
-    app: flaskr-review-app-${IMAGE_TAG}
+    app: flaskr-staging-app-${IMAGE_TAG}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: flaskr-review-app-${IMAGE_TAG}
+      app: flaskr-staging-app-${IMAGE_TAG}
   template:
     metadata:
       labels:
-        app: flaskr-review-app-${IMAGE_TAG}
+        app: flaskr-staging-app-${IMAGE_TAG}
     spec:
       securityContext:
         fsGroup: 1024
       containers:
-        - name: flaskr-review
+        - name: flaskr-staging
           image: ${IMAGE_NAME}
           ports:
           - containerPort: 8080
@@ -47,7 +47,7 @@ spec:
             - mountPath: /home/app/db
               name: db
       initContainers:
-        - name: flaskr-review-init
+        - name: flaskr-staging-init
           image: ${IMAGE_NAME}
           command: ['flask', 'init-db']
           volumeMounts:
@@ -56,7 +56,7 @@ spec:
       volumes:
         - name: db
           persistentVolumeClaim:
-            claimName: flaskr-review-persistent-volume-claim
+            claimName: flaskr-staging-persistent-volume-claim
 
 ---
 
@@ -64,12 +64,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: flaskr-review-app-${IMAGE_TAG}
-  name: flaskr-review-load-balancer-${IMAGE_TAG}
-  namespace: flaskr-review
+    app: flaskr-staging-app-${IMAGE_TAG}
+  name: flaskr-staging-load-balancer-${IMAGE_TAG}
+  namespace: flaskr-staging
 spec:
   selector:
-    app: flaskr-review-app-${IMAGE_TAG}
+    app: flaskr-staging-app-${IMAGE_TAG}
   ports:
   - protocol: TCP
     port: 9090
@@ -82,14 +82,14 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:
-    app: flaskr-review-app-${IMAGE_TAG}
-  name: flaskr-review-virtual-host-${IMAGE_TAG}
-  namespace: flaskr-review
+    app: flaskr-staging-app-${IMAGE_TAG}
+  name: flaskr-staging-virtual-host-${IMAGE_TAG}
+  namespace: flaskr-staging
 spec:
   rules:
-  - host: ${IMAGE_TAG}.${APPS_DOMAIN}
+  - host: staging.${APPS_DOMAIN}
     http:
       paths:
       - backend:
-          serviceName: flaskr-review-load-balancer-${IMAGE_TAG}
+          serviceName: flaskr-staging-load-balancer-${IMAGE_TAG}
           servicePort: 9090
