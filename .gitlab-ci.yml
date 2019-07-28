@@ -89,6 +89,10 @@ review_build:
   stage: review
   environment:
     name: review/$CI_BUILD_REF_SLUG
+  only:
+    - branches
+  except:
+    - master
 
 review_deploy:
   << : *auth
@@ -99,6 +103,8 @@ review_deploy:
     name: review/$CI_BUILD_REF_SLUG
     url: http://$CI_BUILD_REF_SLUG.$APPS_DOMAIN
     on_stop: review_clean
+  needs:
+    - review_build
   only:
     - branches
   except:
@@ -142,6 +148,8 @@ staging_deploy:
     name: staging
     url: http://staging.$APPS_DOMAIN
     on_stop: staging_clean
+  needs:
+    - staging_build
   only:
     - master
 
@@ -168,6 +176,8 @@ production:
   script:
     - envsubst < ./kubernetes-manifests/flaskr-production-gcp.deployment.yaml | kubectl apply -f -
   when: manual
+  needs:
+    - staging_build
   environment:
     name: production
     url: http://$APPS_DOMAIN
