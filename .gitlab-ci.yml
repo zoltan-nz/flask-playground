@@ -1,7 +1,7 @@
 stages:
   - test
   - review_build
-  - review_deploy
+  - review
   - build
   - staging
   - production
