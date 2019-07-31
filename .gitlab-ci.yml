@@ -21,7 +21,7 @@ variables:
   FLASK_ENV: "production"
   DEBUG: "false"
   IMAGE_TAG: "${CI_COMMIT_REF_SLUG}"
-  IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_COMMIT_REF_SLUG}"
+  IMAGE_NAME: "gcr.io/${GC_PROJECT_ID}/flask-playground:${CI_COMMIT_SHORT_SHA}"
 
   # Note that if you're using the Kubernetes executor, the variable should be set to
   # tcp://localhost:2375/ because of how the Kubernetes executor connects services
@@ -82,7 +82,7 @@ test:
   script:
     - pipenv run build
     - cat /tmp/gc-service-account-key.json | docker login -u _json_key --password-stdin https://gcr.io
-    - docker build --build-arg flaskr_image_name=$IMAGE_TAG -t $IMAGE_NAME .
+    - docker build --build-arg flaskr_image_name=$CI_COMMIT_SHORT_SHA -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
 
 review_build:
