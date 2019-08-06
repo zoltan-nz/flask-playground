@@ -150,7 +150,7 @@ $ open http://localhost:9090
 
 ## Use GitLab Runner, Kubernetes and Google Cloud
 
-[Deploy using Kubernetes](./kubernetes-manifests/README.md)
+[Deploy using Kubernetes](./kubernetes/README.md)
 
 ## Upgrading Python
 

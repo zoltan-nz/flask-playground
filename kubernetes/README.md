@@ -33,7 +33,7 @@ Switch to the new `review` context
 kubectl config use-context review
 ```
 
-Create the Kubernetes manifest for the local deployment: `./kubernetes-manifests/flaskr-review-local.deployment.yaml`
+Create the Kubernetes manifest for the local deployment: `./kubernetes/flaskr-review-local.deployment.yaml`
 
 ```yaml
 apiVersion: apps/v1
@@ -164,7 +164,7 @@ securityContext:
 
 Substitute environment variables in Kubernetes manifest files. Use `envsubst`. Mac installation: `brew install gettext`.
 ```bash
-$ CI_COMMIT_REF_SLUG=demo envsubst < ./kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -
+$ CI_COMMIT_REF_SLUG=demo envsubst < ./kubernetes/flaskr-review-local.deployment.yaml | kubectl apply -f -
 ```
 
 Add dynamic image tag management using `envsubst`.
@@ -173,7 +173,7 @@ Add dynamic image tag management using `envsubst`.
 
 ```
 build-docker = "sh -c 'pipenv run build && IMAGE_TAG=${IMAGE_TAG:-latest} docker build --build-arg flaskr_image_name=flaskr:$IMAGE_TAG -t flaskr:$IMAGE_TAG .'"
-deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
+deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
 ```
 
 ## Setup Ingress Controller
@@ -230,7 +230,7 @@ Example: `kubectl scale --replicas=1 -n flaskr deployment flaskr-review-deployme
 
 ## Setup dynamic review deployment with GitLab CI and Google Cloud Platform Kubernetes
 
-Changes are implemented in `kubernetes-manifests/flaskr-review-gcp.deployment.yaml`.
+Changes are implemented in `kubernetes/flaskr-review-gcp.deployment.yaml`.
 
 Important environment variables:
 

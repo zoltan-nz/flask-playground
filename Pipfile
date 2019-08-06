@@ -48,5 +48,5 @@ cov-report = "sh -c 'pipenv run cov && coverage report'"
 cov-html = "sh -c 'pipenv run cov && coverage html && open htmlcov/index.html'"
 build = 'pip wheel -w dist .'
 build-docker = "sh -c 'pipenv run build && IMAGE_TAG=${IMAGE_TAG:-latest}; docker build --build-arg flaskr_image_name=flaskr:$IMAGE_TAG --tag flaskr:$IMAGE_TAG .'"
-deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes-manifests/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
-deploy-gc-review = "sh -c 'envsubst < kubernetes-manifests/flaskr-review-gcp.deployment.yaml | kubectl apply -f -'"
+deploy-kubernetes-local = "sh -c 'pipenv run build-docker && IMAGE_TAG=${IMAGE_TAG:-latest} envsubst < kubernetes/flaskr-review-local.deployment.yaml | kubectl apply -f -'"
+deploy-gc-review = "sh -c 'envsubst < kubernetes/flaskr-review-gcp.deployment.yaml | kubectl apply -f -'"
